@@ -1,5 +1,5 @@
 # email and password used to log in
-email = ""
-pwd = ""
+email : ""
+pwd : ""
 # web page that shows appointment details
-appointment_page = "https://ais.usvisa-info.com/en-ca/niv/schedule/xxxxxx"
+appointment_page : "https://ais.usvisa-info.com/en-ca/niv/schedule/xxxxxx"
