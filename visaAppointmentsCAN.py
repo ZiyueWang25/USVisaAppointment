@@ -162,7 +162,7 @@ def main():
       find_date, month, date_str = get_appointment_date(driver)
       if not find_date:
         continue
-      scheduled = schedule_appointment(driver, month, date_str, CFG['debug'])
+      scheduled = schedule_appointment(driver, month, date_str, CFG.get('debug', False))
 
     if scheduled:
       break
