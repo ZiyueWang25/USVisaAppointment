@@ -3,3 +3,5 @@ email : ""
 pwd : ""
 # web page that shows appointment details
 appointment_page : "https://ais.usvisa-info.com/en-ca/niv/schedule/xxxxxx"
+# debug if true, will not schedule the appointment
+debug : false
