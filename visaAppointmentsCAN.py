@@ -1,3 +1,4 @@
+import enum
 import selenium
 import random
 from selenium import webdriver
@@ -13,6 +14,20 @@ import yaml
 # 3. more setting for date and month
 # 4. email notification
 # 5. logging
+
+@enum.unique
+class LoginSchedule:
+  """
+  Each day we can log into the appointment page
+  12 times, and we can use different strategy to
+  schedule the appointment.
+  """
+  CheckEvery2Hour = enum.auto()
+
+def login_schedule(choice: LoginSchedule):
+  if choice == LoginSchedule.CheckEvery2Hour:
+    wait_response(seconds=60 * 120)
+
 
 
 UNCLICABLE_CLASS = "ui-state-disabled"
@@ -144,6 +159,8 @@ def get_appointment_date(driver):
 
   return find_date, month, date_str
 
+
+
 def main():
   CFG = read_config("./cfg.yaml")
   print("CFG:", CFG)
@@ -166,9 +183,7 @@ def main():
 
     if scheduled:
       break
-    # 12 quotas per day -> try every 2 hour 
-    print("sleep 2 hours and continue")
-    wait_response(seconds=60 * 120)
+    login_schedule(LoginSchedule.CheckEvery2Hour)
 
 if __name__ == "__main__":
   main()
