@@ -15,8 +15,7 @@ import yaml
 # 4. email notification
 # 5. logging
 
-@enum.unique
-class LoginSchedule:
+class LoginSchedule(enum.Enum):
   """
   Each day we can log into the appointment page
   12 times, and we can use different strategy to
@@ -26,6 +25,7 @@ class LoginSchedule:
 
 def login_schedule(choice: LoginSchedule):
   if choice == LoginSchedule.CheckEvery2Hour:
+    print("Wait 2 hours for the next check")
     wait_response(seconds=60 * 120)
 
 
@@ -90,8 +90,6 @@ def is_bookable(month, date_str):
   elif month == "December":
     bookable = True
   elif month == "January" and date_num <= 13:
-    bookable = True
-  elif month in ["Feburary", "March"]:
     bookable = True
   else:
     stop_checking = True
@@ -168,7 +166,11 @@ def main():
   options = webdriver.ChromeOptions()
   options.add_argument("headless")
   scheduled = False
+  first_time = True
   while True:
+    if not first_time:
+      login_schedule(LoginSchedule.CheckEvery2Hour)
+    first_time = False
     with webdriver.Chrome("chromedriver",options=options) as driver:
       no_internet = get_to_login_page(driver, CFG)
       if no_internet:
@@ -176,14 +178,13 @@ def main():
       reached_daily_limit = get_to_appointment_page(driver, CFG)
       if reached_daily_limit:
         continue
-      find_date, month, date_str = get_appointment_date(driver)
+      find_date, month, date_str = get_appointment_date(driver)        
       if not find_date:
         continue
       scheduled = schedule_appointment(driver, month, date_str, CFG.get('debug', False))
 
     if scheduled:
       break
-    login_schedule(LoginSchedule.CheckEvery2Hour)
 
 if __name__ == "__main__":
   main()
