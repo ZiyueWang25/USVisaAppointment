@@ -88,7 +88,7 @@ def is_ideal(month, date_str):
   Each bookable date will be judged by this function. Three scenarios:
   1. Feb 10th is the earliest bookable date, not ideal and we continue checking other dates.
   2. March 1st is the earliest bookable date, perfect and we are done.
-  3. April 20th is the earliest bookable date, not ideal and it goes beyond our desired range
+  3. April 24th is the earliest bookable date, not ideal and it goes beyond our desired range
      so we stop checking.
   """
   ideal = False
