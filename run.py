@@ -90,6 +90,10 @@ def is_ideal(month, date_str):
   2. March 1st is the earliest bookable date, perfect and we are done.
   3. April 24th is the earliest bookable date, not ideal and it goes beyond our desired range
      so we stop checking.
+     
+  Also, suppose you booked April 15th but you want to make it earlier. You need to change the
+  function again to make the ideal date narrower in order to achieve that, otherwise you may
+  book April 20th if it is available next time.
   """
   ideal = False
   stop_checking = False
