@@ -1,7 +1,7 @@
 # email and password used to log in
 email : ""
 pwd : ""
-# web page that shows appointment details
-appointment_page : "https://ais.usvisa-info.com/en-ca/niv/schedule/xxxxxx"
+# web page that shows appointment details.
+appointment_page : "https://ais.usvisa-info.com/en-ca/niv/schedule/YOUR_LINK_NUMBER/appointment"
 # debug if true, will not schedule the appointment
 debug : false

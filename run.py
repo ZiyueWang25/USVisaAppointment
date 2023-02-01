@@ -80,20 +80,32 @@ def get_to_login_page(driver, CFG):
     print("no internet connection")
   return no_internet
 
-def is_bookable(month, date_str):
-  bookable = False
+def is_ideal(month, date_str):
+  """Checks whether a given clickable month and date is ideal
+  
+  Suppose you run this script at Feb 1st, and you want to book any date between
+  Feb 13th to April 20th. The program will check each month starting from Feburary.
+  Each bookable date will be judged by this function. Three scenarios:
+  1. Feb 10th is the earliest bookable date, not ideal and we continue checking other dates.
+  2. March 1st is the earliest bookable date, perfect and we are done.
+  3. April 20th is the earliest bookable date, not ideal and it goes beyond our desired range
+     so we stop checking.
+  """
+  ideal = False
   stop_checking = False
   # change below into the criteria you like
   date_num = int(date_str)
-  if month == "November" and date_num >= 13:
-    bookable = True
-  elif month == "December":
-    bookable = True
-  elif month == "January" and date_num <= 13:
-    bookable = True
+  if month == "Feburary" and date_num < 13:
+    ideal = False
+  if month == "Feburary" and date_num >= 13:
+    ideal = True
+  elif month == "March":
+    ideal = True
+  elif month == "April" and date_num <= 20:
+    ideal = True
   else:
     stop_checking = True
-  return bookable, stop_checking
+  return ideal, stop_checking
 
 
 def schedule_appointment(driver, month, date_str, debug):
@@ -134,18 +146,18 @@ def get_appointment_date(driver):
       if UNCLICABLE_CLASS in d_class:
         continue
       date_str = d.text.strip()
-      bookable, stop_checking = is_bookable(month, date_str)
+      ideal, stop_checking = is_ideal(month, date_str)
 
       if stop_checking:
         print("reached {}-{}, stop checking".format(month, date_str))
         break
 
-      if not bookable:
+      if not ideal:
         print("{}-{} can be booked but not ideal".format(month, date_str))
         continue
 
-      earliest_bookable_date = month + "-" + date_str
-      print("earliest_bookable_date: ", earliest_bookable_date)
+      earliest_ideal_date = month + "-" + date_str
+      print("earliest_ideal_date: ", earliest_ideal_date)
       find_date = True
       d.click()
       break
