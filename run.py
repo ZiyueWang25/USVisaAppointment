@@ -51,10 +51,10 @@ def read_config(file_path):
   with open(file_path, "r") as f:
     return yaml.safe_load(f)
 
-def get_to_login_page(driver:webdriver.Chrome, email:str, pwd:str):
+def get_to_login_page(driver:webdriver.Chrome, signin_page:str, email:str, pwd:str):
   no_internet = False
   try:
-    driver.get("https://ais.usvisa-info.com/en-ca/niv/users/sign_in")
+    driver.get(signin_page)
     wait_response(seconds = 2)
     username = driver.find_element(By.ID, "user_email")
     username.clear()
@@ -195,6 +195,7 @@ def schedule_appointment(driver, got_date, debug):
 def main():
   CFG = read_config("./cfg.yaml")
   print("CFG:", CFG)
+  signin_page = CFG["signin_page"]
   email = CFG["email"]
   pwd = CFG["pwd"]
   appointment_page = CFG["appointment_page"]
@@ -203,9 +204,9 @@ def main():
   debug = CFG["debug"]
   is_mexico = CFG["is_mexico"]
   check_schedule = CFG["check_schedule"]
-  if check_schedule == "Every30min":
+  if check_schedule == "Every30Min":
     check_schedule = LoginSchedule.Every30Min
-  elif check_schedule == "Every2hour":
+  elif check_schedule == "Every2Hour":
     check_schedule = LoginSchedule.Every2Hour
   else:
     raise ValueError("check_schedule should be either Every30min or Every2hour, got {}".format(check_schedule))
@@ -218,8 +219,8 @@ def main():
     if not first_time:
       wait_start(check_schedule)
     first_time = False
-    with webdriver.Chrome("chromedriver",options=options) as driver:
-      no_internet = get_to_login_page(driver, email, pwd)
+    with webdriver.Chrome(options=options) as driver:
+      no_internet = get_to_login_page(driver, signin_page, email, pwd)
       if no_internet:
         continue
       driver.get(appointment_page)
