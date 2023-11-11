@@ -88,27 +88,32 @@ def get_to_login_page(driver:webdriver.Chrome, signin_page:str, email:str, pwd:s
 
 
 def get_date_from_calendar(driver:webdriver.Chrome, start_date: str, end_date: str):
-  current_year = datetime.datetime.now().year
-  current_month = datetime.datetime.now().month
   stop_checking = False
   find_date = False
   got_date = None
   while True:
     # check calendar on the left
     left_calendar = driver.find_element(By.CSS_SELECTOR, "div.ui-datepicker-group-first")
+    year = left_calendar.find_element(By.CSS_SELECTOR, "span.ui-datepicker-year").text.strip()
     month = left_calendar.find_element(By.CSS_SELECTOR, "span.ui-datepicker-month").text.strip()
-    print(f"Month: {month}")
+    print(f"checking {year}-{month}")
     month_num_str = str(NUM_BY_MONTH[month]).zfill(2)
+    got_month = "{}-{}-01".format(year, month_num_str)
+    if got_month > end_date:
+      print(f"{got_month} is beyond end_date {end_date}, stop checking")
+      stop_checking = True
+      break
     dates = left_calendar.find_elements(By.CSS_SELECTOR, "td")
     for d in dates:
       d_class = d.get_attribute("class")
       if UNCLICABLE_CLASS in d_class:
         continue
       date_str = d.text.strip().zfill(2)
-      got_date = "{}-{}-{}".format(current_year, month_num_str, date_str)
+      got_date = "{}-{}-{}".format(year, month_num_str, date_str)
       if got_date > end_date:
         print(f"{got_date} is beyond end_date {end_date}, stop checking")
         stop_checking = True
+        break
       elif got_date >= start_date:
         print(f"{got_date} is within desired range, stop checking")
         find_date = True
@@ -121,10 +126,6 @@ def get_date_from_calendar(driver:webdriver.Chrome, start_date: str, end_date: s
         break
     # go to next month
     driver.find_element(By.CSS_SELECTOR, "a.ui-datepicker-next").click()
-    current_month += 1
-    if current_month > 12:
-      current_month = 1
-      current_year += 1
     wait_response(seconds = 1)
   return find_date, got_date
 
@@ -132,8 +133,8 @@ def get_location(driver:webdriver.Chrome, label:str=CONSULATE_LOCATION_LABEL):
   # select location
   driver.find_element(By.CSS_SELECTOR, f"#{label}_input").click()
   wait_response(seconds = 1)
-  # TODO: select Mexico City
-  driver.find_element(By.CSS_SELECTOR, f"#{label} > option:nth-child(7)").click()
+  # Select Mexico City
+  driver.find_element(By.CSS_SELECTOR, f"#{label} > option:nth-child(6)").click()
   wait_response(seconds = 1)
 
 def get_time_slot(driver:webdriver.Chrome, label:str=CONSULATE_TIME_LABEL):
@@ -172,11 +173,11 @@ def get_appointment(driver:webdriver.Chrome, start_date: str, end_date: str, is_
     find_asc_date = False
     while not find_asc_date:
       print(f"Using date range: {start_date} - {end_date}")
-      get_location(driver, CONSULATE_LOCATION_LABEL)
+      # get_location(driver, CONSULATE_LOCATION_LABEL)
       reached_daily_limit, find_date, got_date = get_appointment_date(driver, start_date, end_date)
       if reached_daily_limit or not find_date:
         return reached_daily_limit, find_date, got_date
-      get_location(driver, ASC_LOCATION_LABEL)
+      # get_location(driver, ASC_LOCATION_LABEL)
       reached_daily_limit, find_asc_date, got_asc_date = get_appointment_date(driver, start_date, end_date, ASC_DATE_LABEL, ASC_TIME_LABEL)
       if not find_asc_date:
         print("Find consulate date but not find appropriate asc date.")
@@ -191,7 +192,6 @@ def get_appointment(driver:webdriver.Chrome, start_date: str, end_date: str, is_
     return get_appointment_date(driver, start_date, end_date)
 
 def schedule_appointment(driver, got_date, debug):
-  # schedule
   driver.find_element(By.NAME, "commit").click()
   wait_response(seconds = 1)
   # confirmation page
