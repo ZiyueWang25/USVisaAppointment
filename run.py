@@ -22,6 +22,21 @@ ASC_LOCATION_LABEL="appointments_asc_appointment_facility_id"
 ASC_DATE_LABEL = "appointments_asc_appointment_date"
 ASC_TIME_LABEL = "appointments_asc_appointment_time"
 
+NUM_BY_MONTH = {
+  "January": 1,
+  "February": 2,
+  "March": 3,
+  "April": 4,
+  "May": 5,
+  "June": 6,
+  "July": 7,
+  "August": 8,
+  "September": 9,
+  "October": 10,
+  "November": 11,
+  "December": 12,
+}
+
 class LoginSchedule(enum.Enum):
   """
   Each day we can log into the appointment page
@@ -83,13 +98,14 @@ def get_date_from_calendar(driver:webdriver.Chrome, start_date: str, end_date: s
     left_calendar = driver.find_element(By.CSS_SELECTOR, "div.ui-datepicker-group-first")
     month = left_calendar.find_element(By.CSS_SELECTOR, "span.ui-datepicker-month").text.strip()
     print(f"Month: {month}")
+    month_num_str = str(NUM_BY_MONTH[month]).zfill(2)
     dates = left_calendar.find_elements(By.CSS_SELECTOR, "td")
     for d in dates:
       d_class = d.get_attribute("class")
       if UNCLICABLE_CLASS in d_class:
         continue
       date_str = d.text.strip().zfill(2)
-      got_date = "{}-{}-{}".format(current_year, month, date_str)
+      got_date = "{}-{}-{}".format(current_year, month_num_str, date_str)
       if got_date > end_date:
         print(f"{got_date} is beyond end_date {end_date}, stop checking")
         stop_checking = True
