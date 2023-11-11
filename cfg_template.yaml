@@ -5,3 +5,10 @@ pwd : ""
 appointment_page : "https://ais.usvisa-info.com/en-ca/niv/schedule/YOUR_LINK_NUMBER/appointment"
 # debug if true, will not schedule the appointment. Change to false after the program output makes sense to you.
 debug : true
+# Whether or not the appointment is in Mexico
+is_mexico : false
+# The date range (in YYYY-MM-DD format) to search for appointments
+date_start : "2023-12-08"
+date_end : "2023-12-15"
+# check scheule
+check_schedule: "Every30Min"
