@@ -8,7 +8,7 @@ appointment_page : "https://ais.usvisa-info.com/en-ca/niv/schedule/YOUR_LINK_NUM
 debug : true
 # Whether or not the appointment is in Mexico
 is_mexico : false
-# The date range (in YYYY-MM-DD format) to search for appointments
+# The inclusive date range (in YYYY-MM-DD format) to search for appointments
 start_date : "2023-12-08"
 end_date : "2023-12-15"
 # check scheule
