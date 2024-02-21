@@ -282,8 +282,10 @@ def main():
             no_internet = get_to_login_page(driver, signin_page, email, pwd)
             if no_internet:
                 continue
+            logger.info("get into logging page")
             driver.get(appointment_page)
             wait_response(seconds=3)
+            logger.info("get into appointment page")
             try:
                 driver.find_element(By.NAME, "commit").click()
                 wait_response(seconds=1)
